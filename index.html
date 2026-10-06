@@ -3,60 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="A simple collaborative world clock application.">
+  <meta name="description" content="World Clock dashboard for comparing cities, planning meetings and converting time zones.">
   <title>World Clock</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="#home">World Clock</a>
-    <nav aria-label="Main navigation">
-      <a href="#clocks">Clocks</a>
-      <a href="#converter">Converter</a>
-      <a href="#about">About</a>
-    </nav>
-  </header>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Primary navigation">
+      <a class="brand" href="#dashboard" aria-label="World Clock home"><span class="brand-mark">W</span><span>World Clock</span></a>
+      <nav>
+        <a class="nav-link active" href="#dashboard">Dashboard</a>
+        <a class="nav-link" href="#clocks">World Clock</a>
+        <a class="nav-link" href="#meeting-planner">Meeting Planner</a>
+        <a class="nav-link" href="#converter">Time Converter</a>
+        <a class="nav-link" href="#saved-cities">Saved Cities</a>
+        <a class="nav-link" href="#settings">Settings</a>
+      </nav>
+    </aside>
 
-  <main class="container" id="home">
-    <section class="hero">
-      <p class="eyebrow">GLOBAL TIME AT A GLANCE</p>
-      <h1>What time is it around the world?</h1>
-      <p>Track major cities, compare time zones, and stay in sync wherever your team is.</p>
-    </section>
+    <div class="app-main">
+      <header class="topbar">
+        <button class="menu-button" id="menu-button" type="button" aria-controls="sidebar" aria-expanded="false">☰<span class="sr-only">Open navigation</span></button>
+        <label class="top-search"><span class="sr-only">Search cities</span><input id="city-search" type="search" placeholder="Search city or country" autocomplete="off"></label>
+        <div class="top-actions"><button class="icon-button" type="button" aria-label="Notifications">○</button><span class="avatar" aria-label="User profile">UI</span></div>
+      </header>
 
-    <section class="toolbar" aria-label="Clock controls">
-      <label class="search">
-        <span>Search city</span>
-        <input id="city-search" type="search" placeholder="e.g. Tokyo" autocomplete="off">
-      </label>
-      <button id="add-clock" type="button">+ Add clock</button>
-    </section>
+      <main id="dashboard">
+        <section class="hero">
+          <p class="eyebrow">WORLD CLOCK</p>
+          <h1>Time Without Limits</h1>
+          <p>Track cities, compare time zones and plan across borders from one clear workspace.</p>
+        </section>
 
-    <section id="clocks">
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">YOUR CLOCKS</p>
-          <h2>World time</h2>
-        </div>
-        <p id="local-date"></p>
-      </div>
-      <div id="clock-grid" class="clock-grid" aria-live="polite"></div>
-    </section>
+        <section id="clocks">
+          <div class="section-heading"><div><p class="eyebrow">YOUR CITIES</p><h2>World time</h2></div><p id="local-date"></p></div>
+          <div class="toolbar" aria-label="Clock controls"><button id="add-clock" type="button">+ Add city</button></div>
+          <div id="clock-grid" class="clock-grid" aria-live="polite"></div>
+        </section>
 
-    <section id="converter" class="panel">
-      <p class="eyebrow">TIME ZONE CONVERTER</p>
-      <h2>Compare a time</h2>
-      <p class="muted">This section is ready for the teammate handling time conversion.</p>
-    </section>
-
-    <section id="about" class="panel">
-      <p class="eyebrow">TEAM PROJECT</p>
-      <h2>Built to be easy to extend</h2>
-      <p class="muted">HTML holds the structure, CSS controls the design, and JavaScript handles the live clock logic.</p>
-    </section>
-  </main>
-
-  <footer>World Clock · Team Project</footer>
+        <section id="meeting-planner" class="panel"><p class="eyebrow">MEETING PLANNER</p><h2>Plan across time zones</h2><p class="muted">Meeting planning will appear here when its feature is integrated.</p></section>
+        <section id="converter" class="panel"><p class="eyebrow">TIME CONVERTER</p><h2>Compare a time</h2><p class="muted">Time conversion will appear here when its feature is integrated.</p></section>
+        <section id="saved-cities" class="panel"><p class="eyebrow">SAVED CITIES</p><h2>Manage your places</h2><p class="muted">Saved-city controls will appear here when their feature is integrated.</p></section>
+        <section id="settings" class="panel"><p class="eyebrow">SETTINGS</p><h2>Clock preferences</h2><p class="muted">Display preferences will appear here when their feature is integrated.</p></section>
+      </main>
+      <footer>World Clock · Group Project</footer>
+    </div>
+  </div>
   <script src="js/app.js"></script>
 </body>
 </html>
