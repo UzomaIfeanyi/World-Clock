@@ -1,3 +1,8 @@
+import {
+  getTimeForZone,
+  getDateForZone
+} from "./timezoneEngine.js";
+
 const clocks=[{city:"Lagos",zone:"Africa/Lagos",label:"WAT"},{city:"London",zone:"Europe/London",label:"UK"},{city:"New York",zone:"America/New_York",label:"ET"},{city:"Tokyo",zone:"Asia/Tokyo",label:"JST"},{city:"Dubai",zone:"Asia/Dubai",label:"GST"},{city:"Sydney",zone:"Australia/Sydney",label:"AET"}];
 
 const grid=document.querySelector("#clock-grid");
@@ -6,8 +11,10 @@ const sidebar=document.querySelector("#sidebar");
 const menuButton=document.querySelector("#menu-button");
 const navLinks=[...document.querySelectorAll(".nav-link")];
 
-function timeFor(zone){return new Intl.DateTimeFormat("en-GB",{timeZone:zone,hour:"2-digit",minute:"2-digit",second:"2-digit"}).format(new Date())}
-function dateFor(zone){return new Intl.DateTimeFormat("en-GB",{timeZone:zone,weekday:"short",day:"numeric",month:"short"}).format(new Date())}
+function timeFor(zone) {
+  return getTimeForZone(zone);
+}
+function dateFor(zone){return getDateForZone(zone)}
 
 function renderClocks(filter=""){
   const query=filter.trim().toLowerCase();
