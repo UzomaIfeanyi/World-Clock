@@ -6,6 +6,7 @@
   <meta name="description" content="World Clock dashboard for comparing cities, planning meetings and converting time zones.">
   <title>World Clock</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/time-slider.css">
 </head>
 <body>
   <div class="app-shell">
@@ -41,6 +42,24 @@
           <div id="clock-grid" class="clock-grid" aria-live="polite"></div>
         </section>
 
+
+        <section id="time-slider" class="time-slider" aria-labelledby="time-slider-title">
+          <div class="time-slider-header">
+            <div><p class="eyebrow">TIME TRAVEL PREVIEW</p><h2 id="time-slider-title">Explore another time</h2></div>
+            <p class="time-slider-status">Selected offset: <strong id="time-preview-label" aria-live="polite">Live / current time</strong></p>
+          </div>
+          <label for="time-preview-offset">Move backward or forward from now</label>
+          <input class="time-slider-control" id="time-preview-offset" type="range" min="-720" max="720" step="30" value="0">
+          <div class="time-slider-scale"><span>−12 hours</span><span>Now</span><span>+12 hours</span></div>
+          <div class="time-slider-actions">
+            <button type="button" class="slider-secondary" id="time-preview-back" aria-label="Move back 30 minutes">−30 min</button>
+            <button type="button" class="slider-secondary" id="time-preview-forward" aria-label="Move forward 30 minutes">+30 min</button>
+            <button type="button" id="time-preview-reset">Back to now</button>
+          </div>
+          <p class="time-slider-preview">Preview on this device: <strong id="time-preview-date" aria-live="polite"></strong></p>
+          <p class="time-slider-note">Slider controls are functional. Updating city clock cards will be connected after Tasks 3, 6, 7 and 8 are integrated.</p>
+        </section>
+
         <section id="meeting-planner" class="panel"><p class="eyebrow">MEETING PLANNER</p><h2>Plan across time zones</h2><p class="muted">Meeting planning will appear here when its feature is integrated.</p></section>
         <section id="converter" class="panel"><p class="eyebrow">TIME CONVERTER</p><h2>Compare a time</h2><p class="muted">Time conversion will appear here when its feature is integrated.</p></section>
         <section id="saved-cities" class="panel"><p class="eyebrow">SAVED CITIES</p><h2>Manage your places</h2><p class="muted">Saved-city controls will appear here when their feature is integrated.</p></section>
@@ -50,5 +69,6 @@
     </div>
   </div>
   <script src="js/app.js"></script>
+  <script src="js/time-slider.js"></script>
 </body>
 </html>
