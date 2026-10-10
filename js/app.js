@@ -16,6 +16,7 @@ function renderClocks(filter=""){
   const query=filter.trim().toLocaleLowerCase();
   const visible=clocks.filter(clock=>clock.city.toLocaleLowerCase().includes(query)||clock.country.toLocaleLowerCase().includes(query));
   renderWorldClockCards(grid,visible,timeFor,dateFor,digitalClock.getInstant());
+  window.WorldClockAnalog.updateAll(digitalClock.getInstant());
 }
 function updateTimes(instant,hour12){
   document.querySelectorAll(".clock-card").forEach(card=>{
@@ -29,6 +30,7 @@ function updateTimes(instant,hour12){
     if(part){part.textContent=daypart;part.classList.toggle("night",daypart==="Nighttime")}
     time.dateTime=instant.toISOString();
   });
+  window.WorldClockAnalog.updateAll(instant);
   document.querySelector("#local-date").textContent=new Intl.DateTimeFormat("en-GB",{dateStyle:"full"}).format(instant);
 }
 function syncFormatButtons(){
