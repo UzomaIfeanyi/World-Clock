@@ -1,0 +1,9 @@
+/* Task 7 — digital time display and accessible format switch */
+.digital-clock-controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.digital-clock-controls label{color:var(--muted);font-size:.85rem;font-weight:600}
+.clock-format-switch{display:inline-flex;padding:4px;border:1px solid var(--border);border-radius:12px;background:var(--surface)}
+.clock-format-switch button{min-width:64px;min-height:36px;padding:7px 12px;background:transparent;box-shadow:none;color:var(--muted);border-radius:8px;font-size:.86rem}
+.clock-format-switch button[aria-pressed="true"]{background:linear-gradient(135deg,var(--indigo),var(--violet));color:var(--text)}
+.clock-format-switch button:focus-visible{outline:2px solid var(--violet);outline-offset:3px}
+.clock-time{font-variant-numeric:tabular-nums;letter-spacing:-.045em}
+@media(max-width:560px){.toolbar{justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.digital-clock-controls{gap:8px}.clock-format-switch button{min-width:55px}.clock-time{font-size:clamp(1.85rem,9vw,2.65rem)}}
