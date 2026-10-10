@@ -1,0 +1,11 @@
+/* Task 8 — compact analog dial inside each city card */
+.analog-clock{position:relative;width:112px;height:112px;flex:none;align-self:center;margin:6px auto;border:3px solid rgba(167,139,250,.75);border-radius:50%;background:radial-gradient(circle at center,#26314c,#111827);box-shadow:0 5px 20px rgba(0,0,0,.22),inset 0 0 0 3px rgba(255,255,255,.04)}
+.analog-marker{position:absolute;color:#e9e5ff;font-size:11px;font-weight:700;line-height:1}
+.analog-marker-12{top:7px;left:50%;transform:translateX(-50%)}.analog-marker-3{right:8px;top:50%;transform:translateY(-50%)}.analog-marker-6{bottom:7px;left:50%;transform:translateX(-50%)}.analog-marker-9{left:8px;top:50%;transform:translateY(-50%)}
+.analog-hand{position:absolute;left:calc(50% - 2px);bottom:50%;width:4px;transform-origin:50% 100%;border-radius:4px;background:#f9fafb}
+.analog-hour{height:27px;width:5px;left:calc(50% - 2.5px)}.analog-minute{height:37px;background:#c4b5fd}.analog-second{height:42px;width:2px;left:calc(50% - 1px);background:#fbbf24}
+.analog-center{position:absolute;top:50%;left:50%;width:9px;height:9px;border-radius:50%;background:#fbbf24;transform:translate(-50%,-50%)}
+.clock-card.analog-day .analog-clock{border-color:#a78bfa}.clock-card.analog-night .analog-clock{border-color:#64748b;background:radial-gradient(circle at center,#1c2540,#090e1b)}
+.clock-card.analog-night .clock-daypart{color:#94a3b8}
+@media(max-width:720px){.analog-clock{width:104px;height:104px}}
+@media(prefers-reduced-motion:reduce){.analog-hand{transition:none}}
