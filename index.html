@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/clock-cards.css">
   <link rel="stylesheet" href="css/time-slider.css">
+  <link rel="stylesheet" href="css/digital-clock.css">
 </head>
 <body>
   <div class="app-shell">
@@ -39,7 +40,7 @@
 
         <section id="clocks">
           <div class="section-heading"><div><p class="eyebrow">YOUR CITIES</p><h2>World time</h2></div><p id="local-date"></p></div>
-          <div class="toolbar" aria-label="Clock controls"><button id="add-clock" type="button">+ Add city</button></div>
+          <div class="toolbar" aria-label="Clock controls"><div class="digital-clock-controls"><label id="clock-format-label">Time format</label><div class="clock-format-switch" role="group" aria-labelledby="clock-format-label"><button id="clock-format-24" type="button" aria-pressed="true">24-hour</button><button id="clock-format-12" type="button" aria-pressed="false">12-hour</button></div></div><button id="add-clock" type="button">+ Add city</button></div>
           <div id="clock-grid" class="clock-grid" aria-live="polite"></div>
         </section>
 
