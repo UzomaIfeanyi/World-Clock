@@ -1,0 +1,16 @@
+/* Task 3 — responsive World Clock cards (Mary) */
+.clock-card{position:relative;overflow:hidden;display:flex;flex-direction:column;gap:12px;min-width:0;transition:border-color .2s,transform .2s}
+.clock-card:hover{transform:translateY(-2px)}
+.clock-card::before{content:"";position:absolute;inset:0 0 auto;height:3px;background:linear-gradient(90deg,var(--indigo),var(--violet))}
+.clock-card-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.clock-location{min-width:0}
+.clock-country{margin:5px 0 0;color:var(--muted);font-size:.84rem}
+.clock-zone{flex-shrink:0;padding:6px 9px;border-radius:999px;background:rgba(139,92,246,.13)}
+.clock-time{margin:14px 0 0;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;line-height:1.1}
+.clock-card-footer{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-top:auto}
+.clock-daypart{font-size:.78rem;font-weight:700;color:#c4b5fd}
+.clock-daypart::before{content:"";display:inline-block;width:7px;height:7px;margin-right:7px;border-radius:50%;background:currentColor}
+.clock-daypart.night{color:#94a3b8}
+.clock-grid .empty-state{grid-column:1/-1}
+@media(max-width:720px){.clock-card{min-height:175px;padding:20px}.clock-time{font-size:clamp(2rem,8vw,3rem)}}
+@media(prefers-reduced-motion:reduce){.clock-card{transition:none}.clock-card:hover{transform:none}}
