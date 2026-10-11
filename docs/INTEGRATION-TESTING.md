@@ -1,16 +1,39 @@
-# Task 11 — Integration & Testing
+# Task 11 — Integration and Testing
 
-## Scope
+_Last reviewed: 11 October 2026. Source branch: `main`._
 
-Task 11 integrates and verifies features **present on main**: navigation and responsive layout (Task 1), purple styling (Task 2), world-clock cards (Task 3), corrected timezone engine (Task 6), digital clock and 12/24-hour choice (Task 7), analog hands/day-night indicator (Task 8), time slider (Task 9), and the time-converter UI merged as PR #7.
+## What has been integrated
 
-The analog clock used to have two refresh paths: the application controller and a second standalone timer in `analogIntegration.js`. The duplicate bridge is no longer loaded from `index.html`. The application controller now remains responsible for card and analog updates, including search re-rendering and slider previews. The unused bridge file is retained for history; do not re-add its script without reviewing duplication.
+This is the TechCrush Group 10 World Clock standalone project. The application currently combines:
 
-The digital clock controller now tolerates browsers that reject access to localStorage or its property getter. If blocked, preferences stay in memory for that tab.
+| Task | Area | Evidence in the current app |
+| --- | --- | --- |
+| 1 | Core layout and navigation | Sidebar, dashboard and responsive mobile menu |
+| 2 | Styling and responsiveness | Purple theme, light/dark setting, mobile breakpoints |
+| 3 | World Clock cards | Time, city, country, date, flag and day/night label |
+| 4 | City search and add | Full catalogue search, add-city dialog, duplicate protection |
+| 5 | Manage cities | Saved-city order and removal, persisted to browser storage |
+| 6 | Timezone engine | IANA zones and daylight-saving-aware time formatting |
+| 7 | Digital clock | Live refresh and saved 12/24-hour display |
+| 8 | Analogue clock and day/night | Clock hands plus local-hour day/night icon |
+| 9 | Time slider | Back/forward preview linked to displayed clocks |
+| 10 | Meeting Planner | Local business-hour overlap suggestions for 2–5 cities |
 
-## Automated testing
+The Time Converter is an additional working screen and **remains a six-city tool by choice**. Its implementation and interface have not been changed in the final documentation pass.
 
-Requires Node.js 20+ and Python 3 (for a local static HTTP server used by browser tests).
+The original duplicate analogue refresh script (`js/analogIntegration.js`) is not loaded from `index.html`. The application clock controller updates the displayed cards. This legacy script is present for historical reasons; it is **not** a second live clock loop in the page.
+
+## Checks done with automation
+
+GitHub Actions runs JavaScript syntax validation, Node unit tests, and Chromium browser interaction tests when a pull request is opened and when changes land on `main`.
+
+The latest feature-implementation baseline passed its workflow on 11 October 2026:
+
+- Workflow: https://github.com/UzomaIfeanyi/World-Clock/actions/runs/38172285263
+- Tests cover clock cards, search, save/remove/reorder, timezone and daylight-saving rules, digital and analogue clocks, slider, converter, settings, Meeting Planner, and mobile menu interactions.
+- Passing automation is a useful check, **not** evidence that somebody has completed the manual browser review.
+
+To run the tests on a laptop:
 
 ```sh
 npm install
@@ -18,38 +41,26 @@ npx playwright install chromium
 npm test
 ```
 
-- `npm run test:unit`: timezones, daylight-saving offsets, cross-midnight dates, invalid inputs, in-memory format preference and preview handling.
-- `npm run test:e2e`: Chromium interaction tests for load/rendering, six analog clocks, city search, preference persistence, preview slider, converter and London DST transitions, mobile navigation.
-- Every pull request targeting `main` triggers GitHub Actions; the workflow also runs on pushes to `main`.
-- For a quick local preview, run `python3 -m http.server 4173` from the repository root and open `http://127.0.0.1:4173`. ES modules may not work reliably from `file://`.
+Node 20+ and Python 3 are used by the test setup. Start Live Server or run `python3 -m http.server 4173` to view the app. Do not open the HTML from a `file://` address because the JavaScript modules need HTTP.
 
-## Acceptance matrix
+## Browser checks still needing human sign-off
 
-| Area | Automated check | Manual follow-up |
-| --- | --- | --- |
-| Clock cards, dates, timezones and day/night | Unit + Chromium | Inspect alignment on phone and laptop |
-| 12/24-hour preference | Chromium | Reload in a real browser |
-| Analog movement and preview sync | Chromium structural checks | Observe hand movement visually |
-| Search and empty state | Chromium | Try keyboard input |
-| Time slider controls and reset | Chromium | Drag range input on a touchscreen |
-| Conversion and daylight-saving time | Unit + Chromium | Compare with another trusted time-zone source |
-| Navigation and responsive layout | Chromium narrow viewport | Inspect at 320px, 768px and desktop |
-| Console/runtime startup | Chromium test, JS syntax check | Inspect browser console |
-| Accessibility | ARIA and keyboard checks in Chromium | Full screen-reader and contrast audit still needed |
+Use [MANUAL-QA-CHECKLIST.md](MANUAL-QA-CHECKLIST.md). In particular, look closely at the analogue hands while running, the experience on a physical phone, flag fallbacks when offline, keyboard focus, light-mode contrast, and the complete add-city → reorder/remove → Meeting Planner flow.
 
-## Unintegrated feature dependencies
+**Manual sign-off status: NOT YET CONFIRMED.** Do not change this to "passed" until the project lead has checked it personally in the browser.
 
-These features are **not** implemented on main at the time Task 11 was prepared. Their sections should remain clearly labelled as placeholders until their owners submit code:
+## Known boundaries
 
-- Task 4 — City search/add-city selection (the existing search only filters predefined cards)
-- Task 5 — Save, remove and reorder cities
-- Task 10 — Business hours and meeting planner
+- Time Converter has six fixed locations; it is not a search of the full catalogue.
+- Meeting Planner identifies shared weekday work hours, not actual free/busy calendar availability.
+- The day/night badge is based on local clock hours, not astronomy.
+- There is no user account, backend, cloud sync, or meeting invitation flow.
+- Saved cities and preferences are browser-local; country flags use an external image host with text fallback.
 
-Task 11 cannot certify functionality that has not yet been submitted. Re-run the suite and add corresponding tests when those features are merged. Task 12 (documentation/final presentation) remains a separate workstream.
+## Task 11 release gate
 
-## Release gate
-
-1. GitHub Actions integration workflow is green on the Task 11 PR.
-2. No new console errors during the desktop/mobile manual smoke check.
-3. Verify that the outstanding feature owners' pull requests are merged before calling the entire World Clock feature-complete.
-4. Re-run regression tests after every feature merge.
+- [x] Core feature branches integrated on `main`.
+- [x] Automated test suite passed on the final feature baseline.
+- [x] Scope and remaining limitations documented.
+- [ ] Manual desktop and mobile browser checklist signed off.
+- [ ] Any real-world issues found in that check reviewed and either fixed or listed as accepted limitations.
