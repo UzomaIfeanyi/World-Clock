@@ -87,3 +87,51 @@ export function findMeetingSlots({
   }
   return matches;
 }
+
+
+/**
+ * Show working-hour availability on a common timeline.
+ * Each 15-minute interval represents the same real instant for every city.
+ * The reference day is the selected date in the first city's time zone.
+ * This is availability by configured work hours, not calendar availability.
+ */
+export function buildBusinessHoursTimeline({ date, cities, startMinutes = 540, endMinutes = 1020 }) {
+  if (!Array.isArray(cities) || cities.length < 2 || cities.length > 5 ||
+      cities.some(city => !city || typeof city.id !== "string" || typeof city.zone !== "string") ||
+      new Set(cities.map(city => city.id)).size !== cities.length) {
+    throw new RangeError("Choose 2 to 5 distinct cities");
+  }
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) ||
+      !Number.isFinite(Date.parse(date + "T00:00:00Z")) ||
+      !Number.isInteger(startMinutes) || !Number.isInteger(endMinutes) ||
+      startMinutes < 0 || endMinutes > 1440 || startMinutes >= endMinutes) {
+    throw new RangeError("Invalid date or working hours");
+  }
+
+  const stepMs = 15 * 60 * 1000;
+  const firstUtc = Date.parse(date + "T00:00:00Z") - 24 * 60 * 60 * 1000;
+  const lastUtc = firstUtc + 72 * 60 * 60 * 1000;
+  const intervals = [];
+  for (let stamp = firstUtc; stamp < lastUtc; stamp += stepMs) {
+    if (localParts(cities[0].zone, new Date(stamp)).dateKey !== date) continue;
+    const startInstant = new Date(stamp);
+    const lastMinute = new Date(stamp + stepMs - 60 * 1000);
+    const workingCityIds = [];
+    for (const city of cities) {
+      const start = localParts(city.zone, startInstant);
+      const end = localParts(city.zone, lastMinute);
+      if (!weekendDays.has(start.weekday) && start.dateKey === end.dateKey &&
+          start.minuteOfDay >= startMinutes && end.minuteOfDay < endMinutes &&
+          end.minuteOfDay >= startMinutes) {
+        workingCityIds.push(city.id);
+      }
+    }
+    intervals.push({
+      startsAt: startInstant.toISOString(),
+      endsAt: new Date(stamp + stepMs).toISOString(),
+      workingCityIds,
+      allAvailable: workingCityIds.length === cities.length
+    });
+  }
+  return intervals;
+}

@@ -1,6 +1,6 @@
 /* Task 10 — Meeting Planner UI. Does not change saved clocks or book meetings. */
 import { createCityStore } from "./cityStore.js";
-import { findMeetingSlots, localDateKey, nextBusinessDate } from "./meetingEngine.js";
+import { findMeetingSlots, localDateKey, nextBusinessDate, buildBusinessHoursTimeline } from "./meetingEngine.js";
 
 const root = document.querySelector("#meeting-planner");
 if (root) {
@@ -15,7 +15,9 @@ if (root) {
     options: root.querySelector("#planner-city-options"),
     count: root.querySelector("#planner-city-count"),
     status: root.querySelector("#planner-status"),
-    results: root.querySelector("#planner-results")
+    results: root.querySelector("#planner-results"),
+    timeline: root.querySelector("#planner-timeline"),
+    timelineSummary: root.querySelector("#planner-timeline-summary")
   };
   let savedCities = createCityStore().getCities();
   let selected = [];
@@ -96,9 +98,97 @@ if (root) {
     elements.options.replaceChildren(fragment);
     elements.count.textContent = selected.length + " of " + MAX_SELECTION + " selected";
   }
+
+  // All tracks use the first selected city's calendar day and identical UTC intervals.
+  // Groups of adjacent 15-minute segments become one continuous bar.
+  function addTimelineSegments(track, intervals, predicate, type) {
+    let begin = -1;
+    for (let i = 0; i <= intervals.length; i++) {
+      const active = i < intervals.length && predicate(intervals[i]);
+      if (active && begin < 0) begin = i;
+      if (!active && begin >= 0) {
+        const bar = document.createElement("span");
+        bar.className = "planner-timeline-segment " + type;
+        bar.style.left = (100 * begin / intervals.length) + "%";
+        bar.style.width = (100 * (i - begin) / intervals.length) + "%";
+        track.append(bar);
+        begin = -1;
+      }
+    }
+  }
+  function renderTimeline(cities, startMinutes, endMinutes) {
+    let intervals;
+    try {
+      intervals = buildBusinessHoursTimeline({
+        date: elements.date.value, cities, startMinutes, endMinutes
+      });
+    } catch (_) {
+      elements.timelineSummary.textContent = "Timeline unavailable for these settings.";
+      return;
+    }
+    if (!intervals.length) {
+      elements.timelineSummary.textContent = "No timeline for this date.";
+      return;
+    }
+    const cityTime = new Intl.DateTimeFormat("en-GB", {
+      timeZone: cities[0].zone, hour:"2-digit", minute:"2-digit", hourCycle:"h23"
+    });
+    function addRow(name, zone, cityId) {
+      const row = document.createElement("div");
+      row.className = "planner-timeline-row";
+      const cityLabel = document.createElement("div");
+      cityLabel.className = "planner-timeline-city";
+      const title = document.createElement("strong");
+      title.textContent = name;
+      cityLabel.append(title);
+      if (zone) {
+        const subtitle = document.createElement("small");
+        subtitle.textContent = zone;
+        cityLabel.append(subtitle);
+      }
+      const track = document.createElement("div");
+      track.className = "planner-timeline-track";
+      track.setAttribute("role", "img");
+      track.setAttribute("aria-label", cityId
+        ? name + ": purple indicates working hours; green indicates shared hours."
+        : "All cities: green shows when everyone's working hours overlap.");
+      if (cityId) {
+        addTimelineSegments(track, intervals,
+          interval => interval.workingCityIds.includes(cityId), "work");
+      }
+      addTimelineSegments(track, intervals, interval => interval.allAvailable, "shared");
+      row.append(cityLabel, track);
+      elements.timeline.append(row);
+    }
+    addRow("All cities", null, null);
+    for (const city of cities) addRow(city.city, city.zone, city.id);
+
+    const axis = document.createElement("div");
+    axis.className = "planner-timeline-axis";
+    const spacer = document.createElement("span");
+    const labels = document.createElement("div");
+    labels.className = "planner-timeline-axis-labels";
+    for (let index = 0; index <= 4; index++) {
+      const at = index === 4 ? intervals[intervals.length - 1].endsAt
+        : intervals[Math.floor(index * intervals.length / 4)].startsAt;
+      const label = document.createElement("span");
+      label.textContent = cityTime.format(new Date(at));
+      labels.append(label);
+    }
+    axis.append(spacer, labels);
+    elements.timeline.append(axis);
+    const sharedCount = intervals.filter(interval => interval.allAvailable).length;
+    const sharedMinutes = sharedCount * 15;
+    elements.timelineSummary.textContent = sharedCount
+      ? "Shared working time: " + Math.floor(sharedMinutes / 60) + "h " +
+        String(sharedMinutes % 60).padStart(2, "0") + "m"
+      : "No shared working hours on this date.";
+  }
   function renderResults() {
     const cities = activeCities();
     elements.results.replaceChildren();
+    elements.timeline.replaceChildren();
+    elements.timelineSummary.textContent = "";
     refreshReferenceDate();
     if (cities.length < 2) {
       elements.status.textContent = "Choose at least two saved cities.";
@@ -115,6 +205,7 @@ if (root) {
       elements.status.textContent = "Choose a meeting date.";
       return;
     }
+    renderTimeline(cities, start, end);
     let slots;
     try {
       slots = findMeetingSlots({
