@@ -6,6 +6,7 @@ import { createCityStore } from "./cityStore.js";
 const cityStore = createCityStore();
 const grid = document.querySelector("#clock-grid");
 const search = document.querySelector("#city-search");
+const searchResults = document.querySelector("#city-search-results");
 const summary = document.querySelector("#city-summary");
 const sidebar = document.querySelector("#sidebar");
 const backdrop = document.querySelector("#sidebar-backdrop");
@@ -31,9 +32,72 @@ function visibleCities() {
 }
 function renderClocks() {
   const instant = digitalClock.getInstant();
-  renderWorldClockCards(grid, visibleCities(), timeFor, dateFor, instant);
+  const cities = visibleCities();
+  renderWorldClockCards(grid, cities, timeFor, dateFor, instant);
+  if (!cities.length && search.value.trim() && findCities(search.value).length) {
+    grid.querySelector(".empty-state").textContent =
+      "This city is not saved yet. Select Add in the search suggestions above.";
+  }
   window.WorldClockAnalog.updateAll(instant);
   summary.textContent = `${cityStore.getCount()} / ${MAX_CITIES} cities saved`;
+}
+function hideSearchSuggestions() {
+  searchResults.hidden = true;
+  search.setAttribute("aria-expanded", "false");
+}
+function renderSearchSuggestions() {
+  const term = search.value.trim();
+  if (!term) {
+    searchResults.replaceChildren();
+    hideSearchSuggestions();
+    return;
+  }
+  const matches = findCities(term);
+  const lower = term.toLocaleLowerCase("en");
+  matches.sort((a, b) => Number(b.city.toLocaleLowerCase("en").startsWith(lower)) -
+    Number(a.city.toLocaleLowerCase("en").startsWith(lower)));
+  const fragment = document.createDocumentFragment();
+  const heading = document.createElement("p");
+  heading.className = "search-suggestions-title";
+  heading.textContent = "Find and add cities";
+  fragment.append(heading);
+  if (!matches.length) {
+    const empty = document.createElement("p");
+    empty.className = "search-suggestions-empty";
+    empty.textContent = "No matching city or country found.";
+    fragment.append(empty);
+  }
+  for (const city of matches.slice(0, 8)) {
+    const row = document.createElement("div");
+    row.className = "search-suggestion";
+    const flag = window.WorldClockFlags.create(city, "search-suggestion-flag");
+    const label = document.createElement("span");
+    label.className = "search-suggestion-label";
+    const name = document.createElement("strong");
+    name.textContent = city.city;
+    const country = document.createElement("small");
+    country.textContent = city.country;
+    label.append(name, country);
+    const action = document.createElement("button");
+    action.type = "button";
+    action.className = "search-suggestion-add";
+    action.dataset.searchAddCityId = city.id;
+    const saved = cityStore.has(city.id);
+    action.disabled = saved || cityStore.getCount() >= MAX_CITIES;
+    action.textContent = saved ? "Saved" : cityStore.getCount() >= MAX_CITIES ? "Limit reached" : "Add";
+    action.setAttribute("aria-label", (saved ? "Already saved " : "Add ") + city.city + ", " + city.country);
+    row.append(flag, label, action);
+    fragment.append(row);
+  }
+  if (matches.length > 8) {
+    const hint = document.createElement("p");
+    hint.className = "search-suggestions-hint";
+    hint.textContent = "Showing 8 results. Type more to narrow the search.";
+    fragment.append(hint);
+  }
+  searchResults.replaceChildren(fragment);
+  searchResults.hidden = false;
+  search.setAttribute("aria-expanded", "true");
 }
 function updateTimes(instant, hour12) {
   grid.querySelectorAll(".clock-card").forEach(card => {
@@ -78,7 +142,28 @@ function setActiveLink(link) {
   closeSidebar();
 }
 
-search.addEventListener("input", renderClocks);
+search.addEventListener("input", () => {
+  renderClocks();
+  renderSearchSuggestions();
+});
+search.addEventListener("focus", () => { if (search.value.trim()) renderSearchSuggestions(); });
+search.addEventListener("keydown", event => {
+  if (event.key === "Escape" && !searchResults.hidden) {
+    event.preventDefault();
+    hideSearchSuggestions();
+  }
+});
+searchResults.addEventListener("click", event => {
+  const button = event.target.closest("button[data-search-add-city-id]");
+  if (!button || button.disabled) return;
+  if (cityStore.add(button.dataset.searchAddCityId) !== "added") return;
+  renderClocks();
+  notifyCityChange();
+  hideSearchSuggestions();
+});
+document.addEventListener("pointerdown", event => {
+  if (!event.target.closest(".top-search")) hideSearchSuggestions();
+});
 menuButton.addEventListener("click", toggleSidebar);
 backdrop.addEventListener("click", () => closeSidebar());
 navLinks.forEach(link => link.addEventListener("click", () => setActiveLink(link)));
@@ -111,9 +196,7 @@ function renderCityPicker() {
   for (const city of candidates) {
     const option = document.createElement("div");
     option.className = "city-option";
-    const flag = document.createElement("span");
-    flag.className = "city-option-flag";
-    flag.textContent = city.flag;
+    const flag = window.WorldClockFlags.create(city, "city-option-flag");
     flag.setAttribute("aria-hidden", "true");
     const copy = document.createElement("div");
     copy.className = "city-option-copy";
@@ -146,6 +229,7 @@ function renderCityPicker() {
 }
 
 addButton.addEventListener("click", () => {
+  hideSearchSuggestions();
   pickerSearch.value = "";
   pickerFeedback.textContent = "";
   renderCityPicker();

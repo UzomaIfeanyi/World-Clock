@@ -26,3 +26,9 @@
   .clock-flag{font-size:1.35rem;min-width:23px}
   .clock-zone{padding:5px 7px;font-size:.68rem}
 }
+
+/* Compact illustrated sun/moon: tracks the card's existing local daytime status. */
+.clock-daypart{display:inline-flex;align-items:center;gap:6px}
+.clock-daypart::before{content:"";display:inline-block;flex:0 0 19px;width:19px;height:19px;margin-right:0;border-radius:0;background:transparent url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23fbbf24%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%224%22%2F%3E%3Cpath%20d%3D%22M12%202v2M12%2020v2M4.93%204.93l1.41%201.41m11.32%2011.32%201.41%201.41M2%2012h2m16%200h2M4.93%2019.07l1.41-1.41M17.66%206.34l1.41-1.41%22%2F%3E%3C%2Fsvg%3E") center/contain no-repeat}
+.clock-daypart.night::before{background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23c4b5fd%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M20.5%2014.1A9%209%200%200%201%209.9%203.5%209%209%200%201%200%2020.5%2014.1Z%22%2F%3E%3C%2Fsvg%3E")}
+.clock-card-meta .clock-flag{min-width:30px;width:30px;height:23px;font-size:inherit;flex-shrink:0}
