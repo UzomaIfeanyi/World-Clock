@@ -33,3 +33,6 @@ GitHub Actions runs unit and Chromium browser tests for new pull requests. Featu
 
 ### Task 4 — City Search & Add City (Hassan)
 The city picker and global search share the same normalized catalogue search. City, country, ISO country code, and IANA timezone queries work despite accent, spacing or punctuation variations; duplicate entries and the 100-city limit remain enforced.
+
+### Task 5 — Manage Cities (Jemimah)
+The **Saved Cities** section now lists every saved clock with up, down and remove buttons. The same order appears in the dashboard, persists across browser reloads and survives additions/removals. Controls remain usable on mobile and by keyboard. Saved cities are browser-local, not account-synced.

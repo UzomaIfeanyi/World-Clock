@@ -79,3 +79,20 @@ test("Task 4: normalized city discovery handles punctuation, accents and country
   assert.equal(findCities("Toronto")[0].city, "Toronto");
   assert.equal(findCities("no-such-city_1789").length, 0);
 });
+
+test("Task 5: moving a saved city changes display order and persists safely", () => {
+  const memory = storage();
+  const store = createCityStore(memory);
+  const before = store.getCities().map(city => city.id);
+  assert.equal(store.move(before[0], -1), false);
+  assert.equal(store.move(before[before.length - 1], 1), false);
+  assert.equal(store.move("missing", 1), false);
+  assert.equal(store.move(before[0], 20), false);
+  assert.equal(store.move(before[1], -1), true);
+  assert.deepEqual(store.getCities().map(city => city.id).slice(0, 2),
+    [before[1], before[0]]);
+  assert.deepEqual(createCityStore(memory).getCities().map(city => city.id).slice(0, 2),
+    [before[1], before[0]]);
+  assert.equal(store.remove(before[0]), true);
+  assert.equal(store.move(before[0], 1), false);
+});

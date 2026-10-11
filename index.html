@@ -65,7 +65,13 @@
 
         <section id="meeting-planner" class="panel"><p class="eyebrow">MEETING PLANNER</p><h2>Plan across time zones</h2><p class="muted">Meeting planning will appear here when its feature is integrated.</p></section>
         <section id="converter" class="panel"><p class="eyebrow">TIME CONVERTER</p><h2>Compare a time</h2><p class="muted">Time conversion will appear here when its feature is integrated.</p></section>
-        <section id="saved-cities" class="panel"><p class="eyebrow">SAVED CITIES</p><h2>Manage your places</h2><p class="muted">Your selected cities are saved on this device. Use “Add city” to include more places, or “×” on a clock card to remove one. Reordering and account syncing are planned separately.</p></section>
+        <section id="saved-cities" class="panel">
+          <p class="eyebrow">SAVED CITIES</p><h2>Manage your places</h2>
+          <p class="muted">Reorder the clocks on your dashboard with the arrow buttons, or remove places you no longer need. Your order is saved on this device.</p>
+          <p id="saved-cities-count" class="saved-cities-count" aria-live="polite"></p>
+          <div id="saved-cities-list" class="saved-cities-list" aria-label="Saved cities in dashboard order"></div>
+          <p id="saved-cities-feedback" class="saved-cities-feedback" role="status" aria-live="polite"></p>
+        </section>
         <section id="settings" class="panel"><p class="eyebrow">SETTINGS</p><h2>Clock preferences</h2><p class="muted">Display preferences will appear here when their feature is integrated.</p></section>
       </main>
       <footer>World Clock · Group Project</footer>
