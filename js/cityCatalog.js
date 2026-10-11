@@ -44,8 +44,26 @@ export const DEFAULT_CITY_IDS = Object.freeze(defaults.map(name => {
   return match.id;
 }));
 
+// Ignore accents, punctuation and spacing so "new-york", "São Paulo",
+// and "Cote d Ivoire" resolve to their catalogue entries.
+function normalizeSearch(value) {
+  return String(value || "").normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase("en")
+    .replace(/[^a-z0-9]/g, "");
+}
 export function findCities(query) {
-  const term = String(query || "").trim().toLocaleLowerCase("en");
-  return entries.filter(city => !term || [city.city, city.country, city.zone]
-    .some(value => value.toLocaleLowerCase("en").includes(term)));
+  const term = normalizeSearch(query);
+  if (!term) return entries;
+  const result = entries.filter(city =>
+    [city.city, city.country, city.code, city.zone, city.label].some(value =>
+      normalizeSearch(value).includes(term)));
+  // Prefer exact city names, then names beginning with the query.
+  return result.sort((left, right) => {
+    const rank = city => {
+      const name = normalizeSearch(city.city);
+      return name === term ? 0 : name.startsWith(term) ? 1 : 2;
+    };
+    return rank(left) - rank(right);
+  });
 }
