@@ -4,9 +4,15 @@ function requireValidDate(date) {
   if (Number.isNaN(instant.getTime())) throw new RangeError("Invalid date or timestamp");
   return instant;
 }
+const formatterCache = new Map();
 function formatter(zone, options) {
-  // Intl.DateTimeFormat validates IANA timezone names and handles DST transitions.
-  return new Intl.DateTimeFormat("en-GB", { timeZone: zone, ...options });
+  // Reuse validated Intl instances instead of constructing hundreds per second
+  // when a dashboard has many clocks. The IANA rules still handle DST.
+  const key = zone + ":" + JSON.stringify(options);
+  if (!formatterCache.has(key)) {
+    formatterCache.set(key, new Intl.DateTimeFormat("en-GB", { timeZone: zone, ...options }));
+  }
+  return formatterCache.get(key);
 }
 export function getTimeForZone(zone, date = new Date(), hour12 = false) {
   return formatter(zone, {
