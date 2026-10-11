@@ -444,3 +444,32 @@ footer {
     font-size: 2.5rem;
   }
 }
+/* City picker and mobile outside-tap close control. */
+.sidebar-backdrop{display:none}
+.city-summary{color:var(--text-secondary);font-size:.84rem;margin:0 0 12px;text-align:right}
+.city-dialog{width:min(560px,calc(100% - 24px));max-width:none;max-height:min(85dvh,780px);margin:auto;padding:24px;border:1px solid var(--border-color);border-radius:18px;background:var(--bg-surface);color:var(--text-primary);box-shadow:0 24px 90px rgba(0,0,0,.5)}
+.city-dialog::backdrop{background:rgba(5,7,18,.7)}
+.city-dialog-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:12px}
+.city-dialog-heading h2{font-size:1.5rem}
+.city-dialog-close{padding:3px;width:36px;height:36px;flex-shrink:0;background:var(--bg-surface-2);box-shadow:none;font-size:1.5rem;line-height:1}
+.city-picker-label{display:block;margin:20px 0 6px;font-size:.86rem;font-weight:700}
+#add-city-search{width:100%;padding:12px 14px;background:var(--bg-surface-2);border:1px solid var(--border-color);border-radius:10px;color:var(--text-primary);outline:none}
+#add-city-search:focus{border-color:var(--violet);box-shadow:0 0 0 3px rgba(139,92,246,.15)}
+.city-dialog-count{margin:12px 0;color:var(--text-secondary);font-size:.85rem}
+.city-options{display:grid;gap:8px;max-height:min(44dvh,365px);overflow:auto;overscroll-behavior:contain;padding:2px 3px 2px 0}
+.city-option{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--border-color);border-radius:10px;background:var(--bg-surface-2)}
+.city-option-flag{width:32px;flex-shrink:0;text-align:center;font-size:1.45rem;line-height:1}
+.city-option-copy{display:grid;gap:3px;min-width:0;flex:1}
+.city-option-copy strong{font-size:.93rem;overflow-wrap:anywhere}
+.city-option-copy span{color:var(--text-secondary);font-size:.73rem;overflow-wrap:anywhere}
+.city-option-add{min-width:75px;padding:8px 10px;box-shadow:none;font-size:.8rem}
+.city-option-add:disabled{cursor:default;background:var(--bg-surface);color:var(--text-secondary);border:1px solid var(--border-color)}
+.city-picker-empty{padding:14px 4px;font-size:.85rem}
+.city-feedback{min-height:1.2em;margin-top:12px;color:#d8c8ff;font-size:.86rem}
+@media(max-width:720px){
+  .sidebar-backdrop.open{display:block;position:fixed;inset:0;z-index:25;width:100%;height:100dvh;padding:0;border:0;border-radius:0;background:rgba(2,6,23,.58);box-shadow:none;cursor:pointer}
+  .city-summary{text-align:left}
+  .city-dialog{padding:18px}
+  .city-option{padding:9px 7px;gap:8px}
+  .city-option-add{min-width:63px;padding:8px}
+}

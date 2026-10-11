@@ -14,3 +14,15 @@
 .clock-grid .empty-state{grid-column:1/-1}
 @media(max-width:720px){.clock-card{min-height:175px;padding:20px}.clock-time{font-size:clamp(2rem,8vw,3rem)}}
 @media(prefers-reduced-motion:reduce){.clock-card{transition:none}.clock-card:hover{transform:none}}
+
+/* Small flag badges only: no flag artwork over the card background. */
+.clock-card-meta{display:flex;align-items:center;justify-content:flex-end;gap:7px;flex-shrink:0}
+.clock-flag{font-size:1.5rem;line-height:1;display:inline-flex;align-items:center;justify-content:center;min-width:27px}
+.clock-remove{display:inline-grid;place-items:center;width:25px;height:25px;min-width:25px;padding:0;border:1px solid rgba(139,92,246,.25);border-radius:8px;background:transparent;color:var(--text-secondary);box-shadow:none;font-size:1.15rem;font-weight:400}
+.clock-remove:hover{color:var(--text-primary);background:rgba(139,92,246,.16)}
+.clock-remove:focus-visible{outline:2px solid var(--violet);outline-offset:2px}
+@media(max-width:460px){
+  .clock-card-meta{gap:5px}
+  .clock-flag{font-size:1.35rem;min-width:23px}
+  .clock-zone{padding:5px 7px;font-size:.68rem}
+}
