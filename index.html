@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="css/digital-clock.css">
   <link rel="stylesheet" href="css/analog-clock.css">
   <link rel="stylesheet" href="css/time-converter.css">
+  <link rel="stylesheet" href="css/settings.css">
 </head>
 <body>
   <div class="app-shell">
@@ -72,7 +73,33 @@
           <div id="saved-cities-list" class="saved-cities-list" aria-label="Saved cities in dashboard order"></div>
           <p id="saved-cities-feedback" class="saved-cities-feedback" role="status" aria-live="polite"></p>
         </section>
-        <section id="settings" class="panel"><p class="eyebrow">SETTINGS</p><h2>Clock preferences</h2><p class="muted">Display preferences will appear here when their feature is integrated.</p></section>
+        <section id="settings" class="panel" aria-labelledby="settings-title">
+          <p class="eyebrow">SETTINGS</p>
+          <h2 id="settings-title">Clock preferences</h2>
+          <p class="muted">Make World Clock work the way you like. Changes apply immediately and are saved in this browser when storage is available.</p>
+          <div class="settings-grid">
+            <div class="setting-row">
+              <div><label for="setting-hour-format">Time format</label><p>Choose how the digital clocks show the hour.</p></div>
+              <select id="setting-hour-format"><option value="24">24-hour (15:30)</option><option value="12">12-hour (3:30 PM)</option></select>
+            </div>
+            <div class="setting-row">
+              <div><label for="setting-theme">Appearance</label><p>Keep the purple accents in either theme.</p></div>
+              <select id="setting-theme"><option value="dark">Dark</option><option value="light">Light</option></select>
+            </div>
+            <div class="setting-row">
+              <div><label for="setting-date-format">Date format</label><p>Set the order of the month and day on clocks and date previews.</p></div>
+              <select id="setting-date-format"><option value="dmy">Day / Month / Year</option><option value="mdy">Month / Day / Year</option></select>
+            </div>
+            <div class="setting-row">
+              <div><label for="setting-clock-display">Clock display</label><p>Show digital clocks, analogue faces, or both.</p></div>
+              <select id="setting-clock-display"><option value="both">Digital and analogue</option><option value="digital">Digital only</option><option value="analog">Analogue only</option></select>
+            </div>
+          </div>
+          <div class="settings-actions">
+            <button id="settings-reset" type="button" class="settings-reset">Restore default preferences</button>
+            <p id="settings-status" role="status" aria-live="polite">Your saved cities will not be affected.</p>
+          </div>
+        </section>
       </main>
       <footer>World Clock · Group Project</footer>
     </div>

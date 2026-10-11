@@ -21,7 +21,8 @@
     const rem = abs % 60;
     output.textContent = offset === 0 ? "Live / current time" : `${sign}${hours}h ${String(rem).padStart(2,"0")}m`;
     const preview = new Date(Date.now() + offset * 60_000);
-    timestamp.textContent = new Intl.DateTimeFormat("en-GB", {dateStyle:"full",timeStyle:"short"}).format(preview);
+    const locale = document.documentElement.dataset.dateFormat === "mdy" ? "en-US" : "en-GB";
+    timestamp.textContent = new Intl.DateTimeFormat(locale, {dateStyle:"full",timeStyle:"short"}).format(preview);
     window.dispatchEvent(new CustomEvent("worldclock:preview-time-change", {
       detail: { offsetMinutes: offset, previewTimestamp: preview.getTime(), isLive: offset === 0 }
     }));
@@ -30,6 +31,7 @@
   reset.addEventListener("click", () => {slider.value = "0"; render(); slider.focus();});
   back.addEventListener("click", () => {slider.value = String(Math.max(Number(slider.min), minutes() - STEP)); render();});
   forward.addEventListener("click", () => {slider.value = String(Math.min(Number(slider.max), minutes() + STEP)); render();});
+  window.addEventListener("worldclock:preferences-change", render);
   render();
   // Keep the relative preview timestamp current when the slider is in live mode.
   setInterval(() => {if (minutes() === 0) render();}, 60_000);

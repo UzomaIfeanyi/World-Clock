@@ -5,12 +5,12 @@ function requireValidDate(date) {
   return instant;
 }
 const formatterCache = new Map();
-function formatter(zone, options) {
+function formatter(zone, options, locale = "en-GB") {
   // Reuse validated Intl instances instead of constructing hundreds per second
   // when a dashboard has many clocks. The IANA rules still handle DST.
-  const key = zone + ":" + JSON.stringify(options);
+  const key = locale + ":" + zone + ":" + JSON.stringify(options);
   if (!formatterCache.has(key)) {
-    formatterCache.set(key, new Intl.DateTimeFormat("en-GB", { timeZone: zone, ...options }));
+    formatterCache.set(key, new Intl.DateTimeFormat(locale, { timeZone: zone, ...options }));
   }
   return formatterCache.get(key);
 }
@@ -20,10 +20,10 @@ export function getTimeForZone(zone, date = new Date(), hour12 = false) {
     hourCycle: hour12 ? "h12" : "h23"
   }).format(requireValidDate(date));
 }
-export function getDateForZone(zone, date = new Date()) {
+export function getDateForZone(zone, date = new Date(), dateFormat = "dmy") {
   return formatter(zone, {
     weekday: "short", day: "numeric", month: "short", year: "numeric"
-  }).format(requireValidDate(date));
+  }, dateFormat === "mdy" ? "en-US" : "en-GB").format(requireValidDate(date));
 }
 export function getZonedDateTime(zone, date = new Date(), hour12 = false) {
   const instant = requireValidDate(date);

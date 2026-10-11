@@ -1,0 +1,44 @@
+/* Task 2 — settings: follow the project's purple palette in both themes. */
+html[data-theme="light"] {
+  --bg-dark: #f6f7fc;
+  --bg-sidebar: #ffffff;
+  --bg-surface: #ffffff;
+  --bg-surface-2: #eef0fa;
+  --bg-card: #ffffff;
+  --bg-card-hover: #eef0fa;
+  --text-primary: #182338;
+  --text-secondary: #485875;
+  --text-muted: #53627a;
+  --border-color: rgba(79,70,229,.20);
+}
+html[data-theme="light"] .topbar { background: rgba(255,255,255,.95); }
+html[data-theme="light"] .top-search input { background: #f7f8ff; }
+html[data-theme="light"] .country-flag .flag-fallback { color: #182338; }
+html[data-theme="light"] .city-feedback,
+html[data-theme="light"] .saved-cities-feedback { color: #4f46e5; }
+html[data-theme="light"] .clock-card,
+html[data-theme="light"] .panel { box-shadow: 0 4px 22px rgba(36,42,95,.045); }
+html[data-theme="light"] .toolbar > button,
+html[data-theme="light"] .city-option-add:not(:disabled),
+html[data-theme="light"] .search-suggestion-add:not(:disabled),
+html[data-theme="light"] #time-preview-reset,
+html[data-theme="light"] #settings-reset { color: #fff; }
+html[data-theme="light"] .clock-remove,
+html[data-theme="light"] .saved-city-actions button { color: var(--text-primary); }
+html[data-clock-display="digital"] .clock-card .analog-clock { display: none; }
+html[data-clock-display="analog"] .clock-card .clock-time { display: none; }
+.settings-grid { margin-top: 22px; display:grid; gap:12px; }
+.setting-row { display:flex; align-items:center; justify-content:space-between; gap:26px; background:var(--bg-surface-2); border:1px solid var(--border-color); border-radius:12px; padding:16px 18px; }
+.setting-row > div { flex:1; min-width:0; }
+.setting-row label { display:block; font-weight:750; color:var(--text-primary); margin-bottom:4px; }
+.setting-row p { color:var(--text-secondary); font-size:.85rem; }
+.setting-row select { flex:0 1 220px; min-width:155px; max-width:100%; padding:11px 30px 11px 12px; background:var(--bg-surface); border:1px solid var(--border-color); border-radius:10px; color:var(--text-primary); font:inherit; cursor:pointer; }
+.setting-row select:focus-visible, .settings-reset:focus-visible { outline:2px solid var(--violet); outline-offset:3px; }
+.settings-actions { display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin-top:20px; }
+.settings-reset { padding:11px 15px; }
+#settings-status { font-size:.83rem; color:var(--text-secondary); }
+@media(max-width:600px) {
+  .setting-row { flex-direction:column; align-items:stretch; gap:10px; padding:14px; }
+  .setting-row select { flex:auto; width:100%; }
+  .settings-actions { align-items:flex-start; flex-direction:column; }
+}
