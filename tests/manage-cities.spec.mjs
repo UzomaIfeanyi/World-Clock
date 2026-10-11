@@ -17,7 +17,7 @@ test("Task 5: saved cities reorder dashboard clocks and persist after reload", a
   await expect(page.locator("#saved-cities-list .saved-city-row").first()).toContainText("London");
   await expect(page.locator(".clock-card h3").first()).toHaveText("London");
   await expect(page.getByRole("button", { name: "Move up London" })).toBeDisabled();
-  await page.getByRole("button", { name: "Remove London" }).click();
+  await page.locator("#saved-cities-list").getByRole("button", { name: "Remove London" }).click();
   await expect(page.locator(".clock-card h3").first()).toHaveText("Lagos");
   await expect(page.locator("#saved-cities-count")).toContainText("5 of 100");
   await page.reload();
@@ -32,6 +32,6 @@ test("Task 5: adding cities updates the manager and move controls on mobile", as
   await expect(page.getByRole("button", { name: "Move down Vienna" })).toBeDisabled();
   await page.getByRole("button", { name: "Move up Vienna" }).click();
   await expect(page.locator("#saved-cities-list .saved-city-row").nth(5)).toContainText("Vienna");
-  await page.getByRole("button", { name: "Remove Vienna" }).click();
+  await page.locator("#saved-cities-list").getByRole("button", { name: "Remove Vienna" }).click();
   await expect(page.locator("#saved-cities-list .saved-city-row")).toHaveCount(6);
 });
