@@ -1,9 +1,10 @@
 /* Task 7 — Digital Clock Logic: time format preference and live clock controller.
    Uses the shared timezone engine; no independent timezone offsets are calculated. */
-export function createDigitalClockController({render,storage=window.localStorage}){
+export function createDigitalClockController({render,storage}){
   const KEY="worldclock:hour-format";
   let hour12=false;
-  try{hour12=storage.getItem(KEY)==="12"}catch(_error){/* private browsing can block storage */}
+  let store=null;
+  try{store=storage??window.localStorage;hour12=store?.getItem(KEY)==="12"}catch(_error){/* storage may be unavailable or its getter may throw */}
   let previewOffsetMinutes=0;
   let timer=null;
   const getInstant=()=>new Date(Date.now()+previewOffsetMinutes*60_000);
@@ -11,7 +12,7 @@ export function createDigitalClockController({render,storage=window.localStorage
   function refresh(){render(getInstant(),hour12)}
   function setHour12(value){
     hour12=Boolean(value);
-    try{storage.setItem(KEY,hour12?"12":"24")}catch(_error){/* preference remains in memory */}
+    try{store?.setItem(KEY,hour12?"12":"24")}catch(_error){/* preference remains in memory */}
     refresh();
   }
   function setPreviewOffset(value){
