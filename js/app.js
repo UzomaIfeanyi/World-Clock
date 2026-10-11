@@ -153,6 +153,13 @@ addButton.addEventListener("click", () => {
   pickerSearch.focus();
 });
 pickerClose.addEventListener("click", () => dialog.close());
+// On some browsers Escape first clears a search input instead of closing its dialog.
+dialog.addEventListener("keydown", event => {
+  if (event.key === "Escape") {
+    event.preventDefault();
+    dialog.close();
+  }
+});
 pickerSearch.addEventListener("input", () => {
   pickerFeedback.textContent = "";
   renderCityPicker();
