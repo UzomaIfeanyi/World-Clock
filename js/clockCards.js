@@ -1,8 +1,12 @@
 /* City cards keep the established Task 3 layout, with discreet national flags. */
+const clockHourFormatters = new Map();
 function clockHour(zone, instant = new Date()) {
-  return Number(new Intl.DateTimeFormat("en-GB", {
-    timeZone: zone, hour: "2-digit", hourCycle: "h23"
-  }).format(instant));
+  if (!clockHourFormatters.has(zone)) {
+    clockHourFormatters.set(zone, new Intl.DateTimeFormat("en-GB", {
+      timeZone: zone, hour: "2-digit", hourCycle: "h23"
+    }));
+  }
+  return Number(clockHourFormatters.get(zone).format(instant));
 }
 function clockDaypart(zone, instant = new Date()) {
   const hour = clockHour(zone, instant);
