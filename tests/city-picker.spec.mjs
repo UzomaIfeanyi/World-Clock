@@ -41,7 +41,7 @@ test("Paris and Toronto can be added, displayed with flags, saved, and removed",
   await expect(page.locator("#city-summary")).toContainText("8 / 100");
   await page.reload();
   await expect(page.locator(".clock-card")).toHaveCount(8);
-  await page.getByRole("button", { name: "Remove Paris" }).click();
+  await page.locator("#clock-grid").getByRole("button", { name: "Remove Paris" }).click();
   await expect(page.locator(".clock-card")).toHaveCount(7);
   await page.reload();
   await expect(page.locator('[data-zone="Europe/Paris"]')).toHaveCount(0);

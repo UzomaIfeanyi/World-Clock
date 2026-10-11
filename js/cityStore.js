@@ -39,7 +39,18 @@ export function createCityStore(storage) {
     save();
     return true;
   }
-  return { getCities, has, add, remove, getCount: () => selected.length };
+  // Move a saved city exactly one position, retaining the order after refresh.
+  // Invalid identifiers and boundary moves leave storage unchanged.
+  function move(id, direction) {
+    const current = selected.indexOf(id);
+    if (current < 0 || (direction !== -1 && direction !== 1)) return false;
+    const target = current + direction;
+    if (target < 0 || target >= selected.length) return false;
+    [selected[current], selected[target]] = [selected[target], selected[current]];
+    save();
+    return true;
+  }
+  return { getCities, has, add, remove, move, getCount: () => selected.length };
 }
 
 export { STORAGE_KEY };

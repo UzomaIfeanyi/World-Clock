@@ -8,6 +8,9 @@ const grid = document.querySelector("#clock-grid");
 const search = document.querySelector("#city-search");
 const searchResults = document.querySelector("#city-search-results");
 const summary = document.querySelector("#city-summary");
+const savedList = document.querySelector("#saved-cities-list");
+const savedCount = document.querySelector("#saved-cities-count");
+const savedFeedback = document.querySelector("#saved-cities-feedback");
 const sidebar = document.querySelector("#sidebar");
 const backdrop = document.querySelector("#sidebar-backdrop");
 const menuButton = document.querySelector("#menu-button");
@@ -174,12 +177,77 @@ window.addEventListener("resize", () => {
   if (window.innerWidth > 720 && sidebar.classList.contains("open")) closeSidebar();
 });
 
+function renderSavedCities() {
+  const cities = cityStore.getCities();
+  savedCount.textContent = `${cities.length} of ${MAX_CITIES} saved clocks`;
+  const fragment = document.createDocumentFragment();
+  if (!cities.length) {
+    const empty = document.createElement("p");
+    empty.className = "muted";
+    empty.textContent = "No saved cities yet. Choose Add city above to get started.";
+    fragment.append(empty);
+  }
+  cities.forEach((city, index) => {
+    const row = document.createElement("div");
+    row.className = "saved-city-row";
+    row.dataset.savedCityId = city.id;
+    const flag = window.WorldClockFlags.create(city, "saved-city-flag");
+    const info = document.createElement("div");
+    info.className = "saved-city-info";
+    const name = document.createElement("strong");
+    name.textContent = city.city;
+    const detail = document.createElement("span");
+    detail.textContent = `${city.country} · ${city.zone}`;
+    info.append(name, detail);
+    const actions = document.createElement("div");
+    actions.className = "saved-city-actions";
+    for (const [action, text, disabled] of [
+      ["up", "↑", index === 0],
+      ["down", "↓", index === cities.length - 1],
+      ["remove", "×", false]
+    ]) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.dataset.manageAction = action;
+      button.dataset.manageCityId = city.id;
+      button.textContent = text;
+      button.disabled = disabled;
+      button.setAttribute("aria-label",
+        (action === "up" ? "Move up " : action === "down" ? "Move down " : "Remove ") + city.city);
+      button.title = button.getAttribute("aria-label");
+      actions.append(button);
+    }
+    row.append(flag, info, actions);
+    fragment.append(row);
+  });
+  savedList.replaceChildren(fragment);
+}
 function notifyCityChange() {
-  // Other modules can react to saved-city additions without sharing mutable state.
+  renderSavedCities();
+  // Other modules can react to saved-city additions and reordering.
   window.dispatchEvent(new CustomEvent("worldclock:cities-change", {
     detail: { cities: cityStore.getCities() }
   }));
 }
+savedList.addEventListener("click", event => {
+  const button = event.target.closest("button[data-manage-action]");
+  if (!button || button.disabled) return;
+  const id = button.dataset.manageCityId;
+  const city = CITY_BY_ID.get(id);
+  if (!city) return;
+  let updated = false;
+  if (button.dataset.manageAction === "remove") {
+    updated = cityStore.remove(id);
+    if (updated) savedFeedback.textContent = `${city.city} removed.`;
+  } else {
+    const direction = button.dataset.manageAction === "up" ? -1 : 1;
+    updated = cityStore.move(id, direction);
+    if (updated) savedFeedback.textContent = `${city.city} moved ${direction === -1 ? "up" : "down"}.`;
+  }
+  if (!updated) return;
+  renderClocks();
+  notifyCityChange();
+});
 
 function renderCityPicker() {
   const count = cityStore.getCount();
@@ -287,4 +355,5 @@ window.addEventListener("worldclock:preview-time-change", event => {
 });
 
 renderClocks();
+renderSavedCities();
 digitalClock.start();
