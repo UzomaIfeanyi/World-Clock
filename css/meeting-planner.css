@@ -36,3 +36,46 @@ html[data-theme="light"] .planner-control input, html[data-theme="light"] .plann
   .planner-city-choice small { margin-left:auto; }
   .planner-local-time { flex-wrap:wrap; }
 }
+
+
+/* Simple time-aligned business hours view. Same purple theme; green marks overlap. */
+.planner-timeline-section {
+  margin:24px 0 18px;
+  padding:16px;
+  border:1px solid var(--border-color);
+  border-radius:12px;
+  background:var(--bg-surface);
+}
+.planner-timeline-heading { display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap; }
+.planner-timeline-heading h3 { font-size:1.05rem; }
+#planner-timeline-summary { color:var(--text-secondary); font-size:.84rem; }
+.planner-timeline-legend { display:flex; gap:18px; flex-wrap:wrap; margin:12px 0 16px; color:var(--text-secondary); font-size:.78rem; }
+.planner-timeline-legend span { display:inline-flex; align-items:center; gap:6px; }
+.planner-timeline-legend i { width:15px; height:11px; border-radius:3px; display:inline-block; }
+.planner-legend-work { background:var(--violet); }
+.planner-legend-shared { background:#34d399; }
+.planner-timeline { display:grid; gap:11px; }
+.planner-timeline-row, .planner-timeline-axis { display:grid; grid-template-columns:minmax(90px,160px) minmax(0,1fr); gap:12px; align-items:center; }
+.planner-timeline-city { display:grid; min-width:0; font-size:.82rem; }
+.planner-timeline-city strong { overflow-wrap:anywhere; }
+.planner-timeline-city small { color:var(--text-secondary); overflow-wrap:anywhere; font-size:.68rem; }
+.planner-timeline-track {
+  position:relative;
+  height:22px;
+  border-radius:6px;
+  border:1px solid var(--border-color);
+  overflow:hidden;
+  background:var(--bg-surface-2);
+}
+.planner-timeline-segment { position:absolute; top:0; bottom:0; pointer-events:none; }
+.planner-timeline-segment.work { background:var(--violet); opacity:.83; }
+.planner-timeline-segment.shared { background:#34d399; }
+.planner-timeline-axis-labels { display:flex; justify-content:space-between; font-size:.68rem; color:var(--text-secondary); font-variant-numeric:tabular-nums; }
+.planner-timeline-note { color:var(--text-secondary); font-size:.76rem; line-height:1.6; margin-top:13px; }
+@media(max-width:600px) {
+  .planner-timeline-section { padding:12px; }
+  .planner-timeline-row,.planner-timeline-axis { grid-template-columns:96px minmax(0,1fr); gap:7px; }
+  .planner-timeline-track { height:20px; }
+  .planner-timeline-axis-labels { font-size:.6rem; }
+  .planner-timeline-city { font-size:.75rem; }
+}
