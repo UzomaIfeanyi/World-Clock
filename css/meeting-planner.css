@@ -1,0 +1,38 @@
+/* Task 10 — meeting planner follows the existing purple palette. */
+.planner-settings { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin:22px 0; }
+.planner-control { display:grid; align-content:start; gap:7px; min-width:0; }
+.planner-control label { font-size:.83rem; font-weight:750; }
+.planner-control small, .planner-subtle, .planner-footnote { color:var(--text-secondary); font-size:.78rem; }
+.planner-control input, .planner-control select {
+  width:100%; min-width:0; min-height:44px; padding:10px 12px;
+  background:var(--bg-surface-2); color:var(--text-primary);
+  border:1px solid var(--border-color); border-radius:10px; font:inherit; color-scheme:dark;
+}
+html[data-theme="light"] .planner-control input, html[data-theme="light"] .planner-control select { color-scheme:light; }
+.planner-control input:focus-visible,.planner-control select:focus-visible,.planner-city-choice input:focus-visible { outline:2px solid var(--violet); outline-offset:2px; }
+.planner-cities { margin:0; padding:14px; border:1px solid var(--border-color); border-radius:12px; }
+.planner-cities legend { padding:0 8px; font-weight:750; }
+.planner-city-options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px; max-height:244px; overflow:auto; }
+.planner-city-choice { display:flex; align-items:center; gap:7px; padding:9px 10px; border-radius:9px; background:var(--bg-surface-2); cursor:pointer; font-size:.84rem; }
+.planner-city-choice input { flex:none; accent-color:var(--violet); width:17px; height:17px; }
+.planner-city-choice span { min-width:0; flex:1; overflow-wrap:anywhere; font-weight:650; }
+.planner-city-choice small { color:var(--text-secondary); font-size:.68rem; }
+.planner-city-choice:has(input:disabled) { opacity:.57; cursor:default; }
+.planner-subtle { margin:12px 4px 0; }
+.planner-results-header { display:flex; justify-content:space-between; align-items:baseline; gap:12px; flex-wrap:wrap; margin:24px 0 12px; }
+.planner-results-header h3 { font-size:1.09rem; }
+#planner-status { font-size:.84rem; color:var(--text-secondary); }
+.planner-results { display:grid; gap:12px; }
+.planner-slot { padding:16px; border:1px solid var(--border-color); border-radius:12px; background:var(--bg-surface-2); }
+.planner-slot h4 { margin:0 0 10px; color:var(--text-primary); font-size:.99rem; }
+.planner-slot-times { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 16px; }
+.planner-local-time { display:flex; justify-content:space-between; gap:12px; border-top:1px solid var(--border-color); padding-top:7px; font-size:.8rem; }
+.planner-local-time strong { color:var(--text-primary); }
+.planner-local-time span { text-align:right; color:var(--text-secondary); }
+.planner-footnote { margin-top:16px; line-height:1.6; }
+@media(max-width:900px) { .planner-settings { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:600px) {
+  .planner-settings,.planner-city-options,.planner-slot-times { grid-template-columns:1fr; }
+  .planner-city-choice small { margin-left:auto; }
+  .planner-local-time { flex-wrap:wrap; }
+}
