@@ -26,6 +26,8 @@
       </nav>
     </aside>
 
+    <button class="sidebar-backdrop" id="sidebar-backdrop" type="button" aria-label="Close navigation" tabindex="-1"></button>
+
     <div class="app-main">
       <header class="topbar">
         <button class="menu-button" id="menu-button" type="button" aria-controls="sidebar" aria-expanded="false">☰<span class="sr-only">Open navigation</span></button>
@@ -43,6 +45,7 @@
         <section id="clocks">
           <div class="section-heading"><div><p class="eyebrow">YOUR CITIES</p><h2>World time</h2></div><p id="local-date"></p></div>
           <div class="toolbar" aria-label="Clock controls"><div class="digital-clock-controls"><label id="clock-format-label">Time format</label><div class="clock-format-switch" role="group" aria-labelledby="clock-format-label"><button id="clock-format-24" type="button" aria-pressed="true">24-hour</button><button id="clock-format-12" type="button" aria-pressed="false">12-hour</button></div></div><button id="add-clock" type="button">+ Add city</button></div>
+          <p id="city-summary" class="city-summary" aria-live="polite">6 / 100 cities saved</p>
           <div id="clock-grid" class="clock-grid" aria-live="polite"></div>
         </section>
 
@@ -58,12 +61,24 @@
 
         <section id="meeting-planner" class="panel"><p class="eyebrow">MEETING PLANNER</p><h2>Plan across time zones</h2><p class="muted">Meeting planning will appear here when its feature is integrated.</p></section>
         <section id="converter" class="panel"><p class="eyebrow">TIME CONVERTER</p><h2>Compare a time</h2><p class="muted">Time conversion will appear here when its feature is integrated.</p></section>
-        <section id="saved-cities" class="panel"><p class="eyebrow">SAVED CITIES</p><h2>Manage your places</h2><p class="muted">Saved-city controls will appear here when their feature is integrated.</p></section>
+        <section id="saved-cities" class="panel"><p class="eyebrow">SAVED CITIES</p><h2>Manage your places</h2><p class="muted">Your selected cities are saved on this device. Use “Add city” to include more places, or “×” on a clock card to remove one. Reordering and account syncing are planned separately.</p></section>
         <section id="settings" class="panel"><p class="eyebrow">SETTINGS</p><h2>Clock preferences</h2><p class="muted">Display preferences will appear here when their feature is integrated.</p></section>
       </main>
       <footer>World Clock · Group Project</footer>
     </div>
   </div>
+  <dialog id="add-city-dialog" class="city-dialog" aria-labelledby="add-city-title">
+    <div class="city-dialog-heading">
+      <div><p class="eyebrow">WORLD CLOCK</p><h2 id="add-city-title">Add a city</h2></div>
+      <button type="button" id="add-city-close" class="city-dialog-close" aria-label="Close city picker">×</button>
+    </div>
+    <p class="muted">Search by city, country or time zone. Save up to 100 cities on this device.</p>
+    <label class="city-picker-label" for="add-city-search">Find a city</label>
+    <input id="add-city-search" type="search" placeholder="Try Paris, Toronto or Nairobi" autocomplete="off">
+    <p id="city-limit" class="city-dialog-count" aria-live="polite"></p>
+    <div id="city-options" class="city-options" role="group" aria-label="Available cities"></div>
+    <p id="city-feedback" class="city-feedback" role="status" aria-live="polite"></p>
+  </dialog>
   <script src="js/clockCards.js"></script>
   <script src="js/analogClock.js"></script>
   <script type="module" src="js/app.js"></script>
