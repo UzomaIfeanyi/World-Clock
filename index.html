@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="css/analog-clock.css">
   <link rel="stylesheet" href="css/time-converter.css">
   <link rel="stylesheet" href="css/settings.css">
+  <link rel="stylesheet" href="css/meeting-planner.css">
 </head>
 <body>
   <div class="app-shell">
@@ -64,7 +65,25 @@
           <p class="time-slider-note">The selected time is shown on every city clock card.</p>
         </section>
 
-        <section id="meeting-planner" class="panel"><p class="eyebrow">MEETING PLANNER</p><h2>Plan across time zones</h2><p class="muted">Meeting planning will appear here when its feature is integrated.</p></section>
+        <section id="meeting-planner" class="panel" aria-labelledby="planner-title">
+          <p class="eyebrow">MEETING PLANNER</p>
+          <h2 id="planner-title">Find a time that works for everyone</h2>
+          <p class="muted">Compare business hours across your saved cities. Suggestions respect each city's local weekdays and daylight-saving rules.</p>
+          <div class="planner-settings">
+            <div class="planner-control"><label for="planner-date">Meeting date</label><input type="date" id="planner-date"><small id="planner-date-hint">Date in your first selected city's time zone.</small></div>
+            <div class="planner-control"><label for="planner-duration">Duration</label><select id="planner-duration"><option value="30">30 minutes</option><option value="60" selected>1 hour</option><option value="90">1 hour 30 minutes</option><option value="120">2 hours</option></select></div>
+            <div class="planner-control"><label for="planner-work-start">Workday starts</label><input type="time" id="planner-work-start" value="09:00" step="1800"></div>
+            <div class="planner-control"><label for="planner-work-end">Workday ends</label><input type="time" id="planner-work-end" value="17:00" step="1800"></div>
+          </div>
+          <fieldset class="planner-cities">
+            <legend>Choose 2–5 saved cities</legend>
+            <div id="planner-city-options" class="planner-city-options"></div>
+            <p id="planner-city-count" class="planner-subtle"></p>
+          </fieldset>
+          <div class="planner-results-header"><h3>Suggested meeting times</h3><p id="planner-status" role="status" aria-live="polite"></p></div>
+          <div id="planner-results" class="planner-results"></div>
+          <p class="planner-footnote">Working hours apply to every selected city (Monday–Friday). Suggestions compare time zones; they do not check anyone's calendar availability.</p>
+        </section>
         <section id="converter" class="panel"><p class="eyebrow">TIME CONVERTER</p><h2>Compare a time</h2><p class="muted">Time conversion will appear here when its feature is integrated.</p></section>
         <section id="saved-cities" class="panel">
           <p class="eyebrow">SAVED CITIES</p><h2>Manage your places</h2>
@@ -121,5 +140,6 @@
   <script type="module" src="js/app.js"></script>
   <script src="js/time-slider.js"></script>
   <script type="module" src="js/timeConverter.js"></script>
+  <script type="module" src="js/meetingPlanner.js"></script>
 </body>
 </html>

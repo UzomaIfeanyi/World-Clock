@@ -29,7 +29,7 @@ npx playwright install chromium
 npm test
 ```
 
-GitHub Actions runs unit and Chromium browser tests for new pull requests. Feature areas under active development (meeting planner and account syncing) are identified separately.
+GitHub Actions runs unit and Chromium browser tests for new pull requests. Account syncing is not included; saved cities and preferences are browser-local.
 
 ### Task 4 — City Search & Add City (Hassan)
 The city picker and global search share the same normalized catalogue search. City, country, ISO country code, and IANA timezone queries work despite accent, spacing or punctuation variations; duplicate entries and the 100-city limit remain enforced.
@@ -39,3 +39,6 @@ The **Saved Cities** section now lists every saved clock with up, down and remov
 
 ### Task 2 — Settings (Aminu / UI styling)
 Settings provides browser-local appearance, date formatting and clock-display options, alongside the existing Task 7 12/24-hour digital time control. Changes apply to dashboard clocks immediately, and date preferences also update the local date, slider preview, and converter results. Choose **Restore default preferences** to reset only display settings; saved cities are not removed. Preferences are stored in localStorage when available and otherwise remain active until the page closes.
+
+### Task 10 — Business Hours & Meeting Planner
+Open **Meeting Planner** to choose 2–5 saved cities, a meeting date in the first selected city's local calendar, duration (30–120 minutes), and a shared workday window (default 09:00–17:00). The planner offers matching times on weekdays in **all** selected cities. Every result displays each city's corresponding local date and time. Time-zone and daylight-saving differences are calculated through built-in IANA rules; no fixed hour offsets are assumed. If there is no shared working-hour slot, the planner explains how to adjust the date, cities, working hours or duration. Selected locations, duration and working-hour settings persist in browser storage where allowed. The planner does not book meetings or read anyone's calendar, and it never deletes saved cities.
