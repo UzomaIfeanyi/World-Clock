@@ -36,3 +36,6 @@ The city picker and global search share the same normalized catalogue search. Ci
 
 ### Task 5 — Manage Cities (Jemimah)
 The **Saved Cities** section now lists every saved clock with up, down and remove buttons. The same order appears in the dashboard, persists across browser reloads and survives additions/removals. Controls remain usable on mobile and by keyboard. Saved cities are browser-local, not account-synced.
+
+### Task 2 — Settings (Aminu / UI styling)
+Settings provides browser-local appearance, date formatting and clock-display options, alongside the existing Task 7 12/24-hour digital time control. Changes apply to dashboard clocks immediately, and date preferences also update the local date, slider preview, and converter results. Choose **Restore default preferences** to reset only display settings; saved cities are not removed. Preferences are stored in localStorage when available and otherwise remain active until the page closes.

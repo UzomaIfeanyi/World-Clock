@@ -2,8 +2,10 @@ import { getTimeForZone, getDateForZone } from "./timezoneEngine.js";
 import { createDigitalClockController } from "./digitalClock.js";
 import { CITY_BY_ID, MAX_CITIES, findCities } from "./cityCatalog.js";
 import { createCityStore } from "./cityStore.js";
+import { createPreferencesStore } from "./preferences.js";
 
 const cityStore = createCityStore();
+const preferencesStore = createPreferencesStore();
 const grid = document.querySelector("#clock-grid");
 const search = document.querySelector("#city-search");
 const searchResults = document.querySelector("#city-search-results");
@@ -24,10 +26,16 @@ const pickerOptions = document.querySelector("#city-options");
 const pickerCount = document.querySelector("#city-limit");
 const pickerFeedback = document.querySelector("#city-feedback");
 const pickerClose = document.querySelector("#add-city-close");
+const settingTimeFormat = document.querySelector("#setting-hour-format");
+const settingTheme = document.querySelector("#setting-theme");
+const settingDateFormat = document.querySelector("#setting-date-format");
+const settingClockDisplay = document.querySelector("#setting-clock-display");
+const settingsStatus = document.querySelector("#settings-status");
+const settingsReset = document.querySelector("#settings-reset");
 let digitalClock;
 
 function timeFor(zone) { return getTimeForZone(zone, digitalClock.getInstant(), digitalClock.getHour12()); }
-function dateFor(zone) { return getDateForZone(zone, digitalClock.getInstant()); }
+function dateFor(zone) { return getDateForZone(zone, digitalClock.getInstant(), preferencesStore.get().dateFormat); }
 function visibleCities() {
   const query = search.value.trim().toLocaleLowerCase("en");
   return cityStore.getCities().filter(city =>
@@ -110,23 +118,70 @@ function updateTimes(instant, hour12) {
     const part = card.querySelector(".clock-daypart");
     time.textContent = getTimeForZone(zone, instant, hour12);
     time.dateTime = instant.toISOString();
-    date.textContent = getDateForZone(zone, instant);
+    date.textContent = getDateForZone(zone, instant, preferencesStore.get().dateFormat);
     const daypart = clockDaypart(zone, instant);
     part.textContent = daypart;
     part.classList.toggle("night", daypart === "Nighttime");
   });
   window.WorldClockAnalog.updateAll(instant);
   document.querySelector("#local-date").textContent =
-    new Intl.DateTimeFormat("en-GB", { dateStyle: "full" }).format(instant);
+    new Intl.DateTimeFormat(preferencesStore.get().dateFormat === "mdy" ? "en-US" : "en-GB", { dateStyle: "full" }).format(instant);
 }
 function syncFormatButtons() {
   clock12Button.setAttribute("aria-pressed", String(digitalClock.getHour12()));
   clock24Button.setAttribute("aria-pressed", String(!digitalClock.getHour12()));
+  settingTimeFormat.value = digitalClock.getHour12() ? "12" : "24";
 }
 digitalClock = createDigitalClockController({ render: updateTimes });
 clock12Button.addEventListener("click", () => { digitalClock.setHour12(true); syncFormatButtons(); });
 clock24Button.addEventListener("click", () => { digitalClock.setHour12(false); syncFormatButtons(); });
 syncFormatButtons();
+
+// Task 2 — settings share the existing digital-clock preference and controller.
+function announcePreferences(message) {
+  settingsStatus.textContent = message;
+  window.dispatchEvent(new CustomEvent("worldclock:preferences-change", {
+    detail: { ...preferencesStore.get(), hour12: digitalClock.getHour12() }
+  }));
+}
+function applyPreferences() {
+  const preferences = preferencesStore.get();
+  document.documentElement.dataset.theme = preferences.theme;
+  document.documentElement.dataset.dateFormat = preferences.dateFormat;
+  document.documentElement.dataset.clockDisplay = preferences.clockDisplay;
+  settingTheme.value = preferences.theme;
+  settingDateFormat.value = preferences.dateFormat;
+  settingClockDisplay.value = preferences.clockDisplay;
+  syncFormatButtons();
+  digitalClock.refresh();
+}
+settingTimeFormat.addEventListener("change", () => {
+  digitalClock.setHour12(settingTimeFormat.value === "12");
+  syncFormatButtons();
+  announcePreferences("Time format updated.");
+});
+settingTheme.addEventListener("change", () => {
+  if (!preferencesStore.set("theme", settingTheme.value)) return;
+  applyPreferences();
+  announcePreferences("Appearance updated.");
+});
+settingDateFormat.addEventListener("change", () => {
+  if (!preferencesStore.set("dateFormat", settingDateFormat.value)) return;
+  applyPreferences();
+  announcePreferences("Date format updated.");
+});
+settingClockDisplay.addEventListener("change", () => {
+  if (!preferencesStore.set("clockDisplay", settingClockDisplay.value)) return;
+  applyPreferences();
+  announcePreferences("Clock display updated.");
+});
+settingsReset.addEventListener("click", () => {
+  preferencesStore.reset();
+  digitalClock.setHour12(false);
+  applyPreferences();
+  announcePreferences("Default preferences restored. Saved cities are unchanged.");
+});
+applyPreferences();
 
 function closeSidebar(restoreFocus = false) {
   sidebar.classList.remove("open");
