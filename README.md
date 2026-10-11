@@ -31,6 +31,24 @@ npm test
 
 GitHub Actions runs unit and Chromium browser tests for new pull requests. Account syncing is not included; saved cities and preferences are browser-local.
 
+## Project status and hand-off
+
+All ten feature tasks have working implementations in the application. Task 11 automated integration tests passed on the feature-complete main branch, but a person should still run the real-browser smoke check before calling the release signed off. Task 12 documentation and a presentation run-through are prepared; the final demo still needs to be delivered by the team.
+
+- [Integration and testing record](docs/INTEGRATION-TESTING.md)
+- [Manual browser sign-off checklist](docs/MANUAL-QA-CHECKLIST.md)
+- [Final presentation notes and demo order](docs/FINAL-PRESENTATION.md)
+
+### Scope we kept simple
+
+- The **Time Converter** intentionally uses six predefined cities. It is functional; we are not expanding it to the entire catalogue for this hand-off.
+- The Meeting Planner suggests overlapping local **working hours**, not verified free slots in individual calendars; it neither schedules nor sends invitations.
+- Day/night means local hours from **06:00 to 17:59**, not calculated sunrise and sunset.
+- Saved cities and preferences live in **this browser's storage**. There is no login or cloud sync.
+- Flag images need a network connection; a country-code fallback is available if they fail.
+
+These are known limitations, not features claimed to be present.
+
 ### Task 4 — City Search & Add City (Hassan)
 The city picker and global search share the same normalized catalogue search. City, country, ISO country code, and IANA timezone queries work despite accent, spacing or punctuation variations; duplicate entries and the 100-city limit remain enforced.
 
