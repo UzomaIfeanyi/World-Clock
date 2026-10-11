@@ -80,6 +80,18 @@
             <div id="planner-city-options" class="planner-city-options"></div>
             <p id="planner-city-count" class="planner-subtle"></p>
           </fieldset>
+          <section class="planner-timeline-section" aria-labelledby="planner-timeline-title">
+            <div class="planner-timeline-heading">
+              <h3 id="planner-timeline-title">Business-hours overlap</h3>
+              <p id="planner-timeline-summary" role="status" aria-live="polite"></p>
+            </div>
+            <div class="planner-timeline-legend" aria-label="Timeline colours">
+              <span><i class="planner-legend-work" aria-hidden="true"></i> Working hours</span>
+              <span><i class="planner-legend-shared" aria-hidden="true"></i> Shared hours</span>
+            </div>
+            <div id="planner-timeline" class="planner-timeline"></div>
+            <p class="planner-timeline-note">The timeline follows the first selected city's date and time. It compares working hours, not calendar bookings.</p>
+          </section>
           <div class="planner-results-header"><h3>Suggested meeting times</h3><p id="planner-status" role="status" aria-live="polite"></p></div>
           <div id="planner-results" class="planner-results"></div>
           <p class="planner-footnote">Working hours apply to every selected city (Monday–Friday). Suggestions compare time zones; they do not check anyone's calendar availability.</p>
