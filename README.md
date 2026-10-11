@@ -30,3 +30,6 @@ npm test
 ```
 
 GitHub Actions runs unit and Chromium browser tests for new pull requests. Feature areas under active development (meeting planner and account syncing) are identified separately.
+
+### Task 4 — City Search & Add City (Hassan)
+The city picker and global search share the same normalized catalogue search. City, country, ISO country code, and IANA timezone queries work despite accent, spacing or punctuation variations; duplicate entries and the 100-city limit remain enforced.

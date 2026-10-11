@@ -69,3 +69,13 @@ test("invalid persisted values and unavailable storage cannot crash the dashboar
   assert.equal(offline.getCount(), 6);
   assert.equal(offline.add(findCities("Paris")[0].id), "added");
 });
+
+test("Task 4: normalized city discovery handles punctuation, accents and country codes", () => {
+  assert.equal(findCities("new-york")[0].city, "New York");
+  assert.equal(findCities("são paulo").some(city => city.city === "Sao Paulo"), true);
+  assert.equal(findCities("Cote d Ivoire").some(city => city.city === "Abidjan"), true);
+  assert.equal(findCities(" ng ").some(city => city.city === "Lagos"), true);
+  assert.equal(findCities("Europe / Vienna").some(city => city.city === "Vienna"), true);
+  assert.equal(findCities("Toronto")[0].city, "Toronto");
+  assert.equal(findCities("no-such-city_1789").length, 0);
+});
