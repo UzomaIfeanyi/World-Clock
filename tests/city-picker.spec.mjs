@@ -33,8 +33,10 @@ test("Paris and Toronto can be added, displayed with flags, saved, and removed",
   await expect(page.locator("#city-feedback")).toContainText("Toronto added");
   await page.locator("#add-city-close").click();
   await expect(page.locator(".clock-card")).toHaveCount(8);
-  await expect(page.locator('[data-zone="Europe/Paris"] .clock-flag')).toHaveText("🇫🇷");
-  await expect(page.locator('[data-zone="America/Toronto"] .clock-flag')).toHaveText("🇨🇦");
+  await expect(page.locator('[data-zone="Europe/Paris"] .clock-flag')).toHaveAttribute("aria-label", "Flag of France");
+  await expect(page.locator('[data-zone="Europe/Paris"] .flag-image')).toHaveAttribute("src", "https://flagcdn.com/w40/fr.png");
+  await expect(page.locator('[data-zone="America/Toronto"] .clock-flag')).toHaveAttribute("aria-label", "Flag of Canada");
+  await expect(page.locator('[data-zone="America/Toronto"] .flag-image')).toHaveAttribute("src", "https://flagcdn.com/w40/ca.png");
   await expect(page.locator('[data-zone="Europe/Paris"] .analog-clock')).toBeVisible();
   await expect(page.locator("#city-summary")).toContainText("8 / 100");
   await page.reload();
@@ -81,4 +83,60 @@ test("the picker can search for a city by country and displays correctly on mobi
   await expect(page.locator(".city-picker-empty")).toContainText("No matching location");
   await page.keyboard.press("Escape");
   await expect(page.locator("#add-city-dialog")).not.toBeVisible();
+});
+
+test("top search finds Vienna before it is saved and adds it directly", async ({ page }) => {
+  const search = page.locator("#city-search");
+  await search.fill("Vienna");
+  await expect(page.locator(".clock-card")).toHaveCount(0);
+  await expect(page.locator(".empty-state")).toContainText("not saved yet");
+  await page.getByRole("button", { name: "Add Vienna, Austria" }).click();
+  await expect(page.locator(".clock-card h3")).toHaveText("Vienna");
+  await expect(page.locator("#city-summary")).toContainText("7 / 100");
+  await expect(page.locator(".search-suggestions")).toBeHidden();
+  const flag = page.locator('[data-zone="Europe/Vienna"] .clock-flag');
+  await expect(flag).toHaveAttribute("aria-label", "Flag of Austria");
+  await expect(flag.locator("img")).toHaveAttribute("src", "https://flagcdn.com/w40/at.png");
+  await search.clear();
+  await expect(page.locator(".clock-card")).toHaveCount(7);
+  await search.fill("Vienna");
+  await expect(page.getByRole("button", { name: "Already saved Vienna, Austria" })).toBeDisabled();
+  await page.reload();
+  await search.fill("Vienna");
+  await expect(page.locator(".clock-card h3")).toHaveText("Vienna");
+});
+test("main search closes on outside tap and Escape; failed flag loading keeps code fallback", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.route("https://flagcdn.com/**", route => route.abort());
+  const search = page.locator("#city-search");
+  await search.fill("Dublin");
+  await expect(page.getByRole("button", { name: "Add Dublin, Ireland" })).toBeVisible();
+  await page.locator("#local-date").click();
+  await expect(page.locator(".search-suggestions")).toBeHidden();
+  await search.fill("Dublin");
+  await page.getByRole("button", { name: "Add Dublin, Ireland" }).click();
+  await expect(page.locator('[data-zone="Europe/Dublin"] .clock-flag')).toContainText("IE");
+  await search.fill("Toronto");
+  await search.press("Escape");
+  await expect(page.locator(".search-suggestions")).toBeHidden();
+});
+test("day/night indicator has graphical sun and moon icons and follows local time", async ({ page }) => {
+  await page.locator("#time-preview-offset").evaluate(el => {
+    el.value = "0";
+    el.dispatchEvent(new Event("input", { bubbles: true }));
+  });
+  const icons = await page.evaluate(() => {
+    const css = getComputedStyle(document.querySelector(".clock-daypart"), "::before").backgroundImage;
+    const night = document.querySelector(".clock-daypart.night");
+    return { day: css, night: night && getComputedStyle(night, "::before").backgroundImage };
+  });
+  expect(icons.day).toContain("data:image/svg+xml");
+  const nightCss = await page.evaluate(() => {
+    const styles = [...document.styleSheets].filter(sheet => {
+      try { return [...sheet.cssRules].some(rule => rule.selectorText === ".clock-daypart.night::before"); }
+      catch { return false; }
+    });
+    return styles.length > 0;
+  });
+  expect(nightCss).toBeTruthy();
 });

@@ -1,3 +1,35 @@
+/* Cross-platform flags: Windows doesn't always render regional-indicator emojis.
+   Display a small national flag image when available, with a country-code fallback. */
+function createCountryFlag(city, className) {
+  const badge = document.createElement("span");
+  badge.className = className + " country-flag";
+  badge.setAttribute("role", "img");
+  const code = city.code || "";
+  if (/^[A-Z]{2}$/.test(code)) {
+    badge.setAttribute("aria-label", "Flag of " + city.country);
+    const fallback = document.createElement("span");
+    fallback.className = "flag-fallback";
+    fallback.textContent = code;
+    fallback.setAttribute("aria-hidden", "true");
+    const image = document.createElement("img");
+    image.className = "flag-image";
+    image.src = "https://flagcdn.com/w40/" + code.toLowerCase() + ".png";
+    image.alt = "";
+    image.width = 30;
+    image.height = 23;
+    image.loading = "lazy";
+    image.decoding = "async";
+    image.addEventListener("error", () => image.remove(), { once: true });
+    badge.append(fallback, image);
+  } else {
+    badge.classList.add("flag-generic");
+    badge.setAttribute("aria-label", "Time zone location");
+    badge.textContent = "🌐";
+  }
+  return badge;
+}
+window.WorldClockFlags = Object.freeze({ create: createCountryFlag });
+
 /* City cards keep the established Task 3 layout, with discreet national flags. */
 const clockHourFormatters = new Map();
 function clockHour(zone, instant = new Date()) {
@@ -41,11 +73,7 @@ function renderWorldClockCards(grid, cities, formatTime, formatDate, instant = n
 
     const controls = document.createElement("div");
     controls.className = "clock-card-meta";
-    const flag = document.createElement("span");
-    flag.className = "clock-flag";
-    flag.textContent = clock.flag;
-    flag.setAttribute("role", "img");
-    flag.setAttribute("aria-label", clock.code ? `Flag of ${clock.country}` : "Time zone location");
+    const flag = createCountryFlag(clock, "clock-flag");
     const zone = document.createElement("span");
     zone.className = "clock-zone";
     zone.textContent = clock.label;

@@ -31,7 +31,11 @@
     <div class="app-main">
       <header class="topbar">
         <button class="menu-button" id="menu-button" type="button" aria-controls="sidebar" aria-expanded="false">☰<span class="sr-only">Open navigation</span></button>
-        <label class="top-search"><span class="sr-only">Search cities</span><input id="city-search" type="search" placeholder="Search city or country" autocomplete="off"></label>
+        <div class="top-search">
+          <label class="sr-only" for="city-search">Search all cities</label>
+          <input id="city-search" type="search" placeholder="Search any city or country" autocomplete="off" aria-controls="city-search-results" aria-expanded="false">
+          <div id="city-search-results" class="search-suggestions" role="region" aria-label="City search suggestions" hidden></div>
+        </div>
         <div class="top-actions"><button class="icon-button" type="button" aria-label="Notifications">○</button><span class="avatar" aria-label="User profile">UI</span></div>
       </header>
 
